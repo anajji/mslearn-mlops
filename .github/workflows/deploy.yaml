@@ -22,7 +22,7 @@ jobs:
     - name: Create Endpoint
       run: az ml online-endpoint create --name sklearn-diabetes-endpoint -f src/endpoint.yml
     - name: Deployment
-      run: az ml online-deployment create --name sklearn-deployment --endpoint sklearn-diabetes-endpoint -f src/deployment.yaml --all-traffic
+      run: az ml online-deployment create --name sklearn-deployment --endpoint sklearn-diabetes-endpoint -f src/deployment.yml --all-traffic
     
 
   
