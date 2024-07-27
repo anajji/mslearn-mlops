@@ -1,0 +1,28 @@
+name: Deploy Model
+
+on:
+    workflow_dispatch
+  
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@main
+    - name: Install az ml extension
+      run: az extension add -n ml -y
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+    - name: Set Workspace, Rg and location
+      run: az configure --defaults workspace=azure-ml-amin group=azure-ml location=francecentral
+    - name: Register Model
+      run:  az ml model create --name "sklearn-diabetes" --path azureml://jobs/serene_grass_ms4zjc3zc7/outputs/artifacts/model
+    - name: Create Endpoint
+      run: az ml online-endpoint create --name sklearn-diabetes-endpoint -f src/endpoint.yml
+    - name: Deployment
+      run: az ml online-deployment create --name sklearn-deployment --endpoint sklearn-diabetes-endpoint -f src/deployment.yaml --all-traffic
+    
+
+  
